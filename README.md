@@ -1,3 +1,9 @@
+### Simple To Do App using python => Django & PostgreSQL
+[![My Skills](https://skillicons.dev/icons?i=python,django,bootstrap,postgres,)](https://skillicons.dev)
+
+
+<br>
+
 ![Todos nada aldubaie](https://github.com/user-attachments/assets/491edce4-9547-4db2-a54b-e416f4f15925)
 
 

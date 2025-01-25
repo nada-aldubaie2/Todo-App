@@ -23,6 +23,7 @@ def add_todo(request):
     return render(request, 'add_todo.html', {'form': form})
 
 
+@login_required
 def edit_todo(request, id):
     task = get_object_or_404(Task, id=id)
     form = New_Task(instance=task)
@@ -39,6 +40,7 @@ def edit_todo(request, id):
     return render(request, 'edit_todo.html', {'form': form, 'task': task})
 
 
+@login_required
 def delete_todo(request, id):
     task = get_object_or_404(Task, id=id)
     if request.method == 'POST':

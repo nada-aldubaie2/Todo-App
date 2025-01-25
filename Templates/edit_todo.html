@@ -1,0 +1,41 @@
+{% extends 'index.html' %}
+{% load widget_tweaks %}
+
+{% block body %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header bg-dark text-light">
+          <h3 class="card-title text-center fw-bold">Edit Task </h3>
+        </div>
+        <div class="card-body">
+          <form method="post" action="{% url 'edit_todo' task.id %}">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="id_text" class="form-label text fs-5 fw-normal"> Task Text</label>
+              <div aria-required="true">
+                {{ form.text | add_class:"form-control" | attr:"placeholder: Enter Task Text" }}
+              </div>
+              {% if form.text.errors %}
+                <div class="text-danger">{{ form.text.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3 form-check">
+              {{ form.is_done | add_class:"form-check-input" }}
+              <label for="id_is_done" class="form-check-label">Done?</label>
+              {% if form.is_done.errors %}
+                <div class="text-danger">{{ form.is_done.errors }}</div>
+              {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-success form-control">Update</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-### Simple To Do App using python => Django & PostgreSQL
+### Simple To Do App using python with JWT Authentication => Django & PostgreSQL
 [![My Skills](https://skillicons.dev/icons?i=python,django,bootstrap,postgres,)](https://skillicons.dev)
 
 

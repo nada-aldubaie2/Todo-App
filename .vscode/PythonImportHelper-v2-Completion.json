@@ -32,22 +32,6 @@
         "documentation": {}
     },
     {
-        "label": "admin",
-        "importPath": "django.contrib",
-        "description": "django.contrib",
-        "isExtraImport": true,
-        "detail": "django.contrib",
-        "documentation": {}
-    },
-    {
-        "label": "AppConfig",
-        "importPath": "django.apps",
-        "description": "django.apps",
-        "isExtraImport": true,
-        "detail": "django.apps",
-        "documentation": {}
-    },
-    {
         "label": "AppConfig",
         "importPath": "django.apps",
         "description": "django.apps",
@@ -138,14 +122,6 @@
         "documentation": {}
     },
     {
-        "label": "models",
-        "importPath": "django.db",
-        "description": "django.db",
-        "isExtraImport": true,
-        "detail": "django.db",
-        "documentation": {}
-    },
-    {
         "label": "migrations",
         "importPath": "django.db",
         "description": "django.db",
@@ -167,14 +143,6 @@
         "description": "django.db",
         "isExtraImport": true,
         "detail": "django.db",
-        "documentation": {}
-    },
-    {
-        "label": "TestCase",
-        "importPath": "django.test",
-        "description": "django.test",
-        "isExtraImport": true,
-        "detail": "django.test",
         "documentation": {}
     },
     {
@@ -251,14 +219,6 @@
     },
     {
         "label": "redirect",
-        "importPath": "django.shortcuts",
-        "description": "django.shortcuts",
-        "isExtraImport": true,
-        "detail": "django.shortcuts",
-        "documentation": {}
-    },
-    {
-        "label": "render",
         "importPath": "django.shortcuts",
         "description": "django.shortcuts",
         "isExtraImport": true,
@@ -526,15 +486,6 @@
         "documentation": {}
     },
     {
-        "label": "TodoConfig",
-        "kind": 6,
-        "importPath": "todo.apps",
-        "description": "todo.apps",
-        "peekOfCode": "class TodoConfig(AppConfig):\n    default_auto_field = 'django.db.models.BigAutoField'\n    name = 'todo'",
-        "detail": "todo.apps",
-        "documentation": {}
-    },
-    {
         "label": "Migration",
         "kind": 6,
         "importPath": "todoapp.migrations.0001_initial",
@@ -575,7 +526,7 @@
         "kind": 2,
         "importPath": "todoapp.views",
         "description": "todoapp.views",
-        "peekOfCode": "def home(request):\n    tasks = Task.objects.all()\n    return render(request, 'home.html', {'tasks': tasks})\n@login_required\ndef add_todo(request):\n    form = New_Task()\n    if request.method == 'POST':\n        form = New_Task(request.POST)\n        if form.is_valid():\n            task = form.save(commit=False)",
+        "peekOfCode": "def home(request):\n    tasks = Task.objects.filter(user=request.user)\n    return render(request, 'home.html', {'tasks': tasks})\n@login_required\ndef add_todo(request):\n    form = New_Task()\n    if request.method == 'POST':\n        form = New_Task(request.POST)\n        if form.is_valid():\n            task = form.save(commit=False)",
         "detail": "todoapp.views",
         "documentation": {}
     },
@@ -593,7 +544,7 @@
         "kind": 2,
         "importPath": "todoapp.views",
         "description": "todoapp.views",
-        "peekOfCode": "def edit_todo(request, id):\n    task = get_object_or_404(Task, id=id)\n    form = New_Task(instance=task)\n    if request.method == 'POST':\n        form = New_Task(request.POST, instance=task)\n        if form.is_valid():\n            task = form.save(commit=False)\n            task.created_at = timezone.now()\n            task.user = request.user\n            task.save()",
+        "peekOfCode": "def edit_todo(request, id):\n    task = get_object_or_404(Task, id=id)\n    if task.user != request.user:\n        messages.error(request, 'You do not have permission to access this task.')\n        return redirect('home')\n    form = New_Task(instance=task)\n    if request.method == 'POST':\n        form = New_Task(request.POST, instance=task)\n        if form.is_valid():\n            task = form.save(commit=False)",
         "detail": "todoapp.views",
         "documentation": {}
     },
@@ -602,7 +553,7 @@
         "kind": 2,
         "importPath": "todoapp.views",
         "description": "todoapp.views",
-        "peekOfCode": "def delete_todo(request, id):\n    task = get_object_or_404(Task, id=id)\n    if request.method == 'POST':\n        task.delete()\n        return redirect('home')\n    return render(request, 'delete_todo.html', {'task': task})",
+        "peekOfCode": "def delete_todo(request, id):\n    task = get_object_or_404(Task, id=id)\n    if task.user != request.user:\n        return redirect('home')\n    if request.method == 'POST':\n        task.delete()\n        return redirect('home')\n    return render(request, 'delete_todo.html', {'task': task})",
         "detail": "todoapp.views",
         "documentation": {}
     },
@@ -692,7 +643,7 @@
         "kind": 5,
         "importPath": "todo_project.settings",
         "description": "todo_project.settings",
-        "peekOfCode": "WSGI_APPLICATION = 'todo_project.wsgi.application'\n# Database\n# https://docs.djangoproject.com/en/5.1/ref/settings/#databases\nDATABASES = {\n    'default': {\n        'ENGINE': 'django.db.backends.postgresql',\n        'NAME': 'Todo',\n        'USER': 'postgres',\n        'PASSWORD': '0_Xqrsw7$',\n        'HOST': 'localhost',",
+        "peekOfCode": "WSGI_APPLICATION = 'todo_project.wsgi.application'\n# Database\n# https://docs.djangoproject.com/en/5.1/ref/settings/#databases\nDATABASES = {\n    'default': {\n        'ENGINE': 'django.db.backends.postgresql',\n        'NAME': 'Todo',\n        'USER': 'postgres',\n        'PASSWORD': '1111', #change acccording to your postgres password\n        'HOST': 'localhost',",
         "detail": "todo_project.settings",
         "documentation": {}
     },
@@ -701,7 +652,7 @@
         "kind": 5,
         "importPath": "todo_project.settings",
         "description": "todo_project.settings",
-        "peekOfCode": "DATABASES = {\n    'default': {\n        'ENGINE': 'django.db.backends.postgresql',\n        'NAME': 'Todo',\n        'USER': 'postgres',\n        'PASSWORD': '0_Xqrsw7$',\n        'HOST': 'localhost',\n        'PORT': '5432',\n    }\n}",
+        "peekOfCode": "DATABASES = {\n    'default': {\n        'ENGINE': 'django.db.backends.postgresql',\n        'NAME': 'Todo',\n        'USER': 'postgres',\n        'PASSWORD': '1111', #change acccording to your postgres password\n        'HOST': 'localhost',\n        'PORT': '5432',\n    }\n}",
         "detail": "todo_project.settings",
         "documentation": {}
     },
@@ -719,7 +670,7 @@
         "kind": 5,
         "importPath": "todo_project.settings",
         "description": "todo_project.settings",
-        "peekOfCode": "LANGUAGE_CODE = 'en-us'\nTIME_ZONE = 'UTC'\nUSE_I18N = True\nUSE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/5.1/howto/static-files/\nSTATIC_URL = 'static/'\nSTATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]\nLOGIN_URL = 'login'\nLOGOUT_REDIRECT_URL = 'login'",
+        "peekOfCode": "LANGUAGE_CODE = 'en-us'\nTIME_ZONE = 'UTC'\nUSE_I18N = True\nUSE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/5.1/howto/static-files/\n# STATIC_URL = 'static/'\n# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]\nLOGIN_URL = 'login'\nLOGOUT_REDIRECT_URL = 'login'",
         "detail": "todo_project.settings",
         "documentation": {}
     },
@@ -728,7 +679,7 @@
         "kind": 5,
         "importPath": "todo_project.settings",
         "description": "todo_project.settings",
-        "peekOfCode": "TIME_ZONE = 'UTC'\nUSE_I18N = True\nUSE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/5.1/howto/static-files/\nSTATIC_URL = 'static/'\nSTATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]\nLOGIN_URL = 'login'\nLOGOUT_REDIRECT_URL = 'login'\n# Default primary key field type",
+        "peekOfCode": "TIME_ZONE = 'UTC'\nUSE_I18N = True\nUSE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/5.1/howto/static-files/\n# STATIC_URL = 'static/'\n# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]\nLOGIN_URL = 'login'\nLOGOUT_REDIRECT_URL = 'login'\n# Default primary key field type",
         "detail": "todo_project.settings",
         "documentation": {}
     },
@@ -737,7 +688,7 @@
         "kind": 5,
         "importPath": "todo_project.settings",
         "description": "todo_project.settings",
-        "peekOfCode": "USE_I18N = True\nUSE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/5.1/howto/static-files/\nSTATIC_URL = 'static/'\nSTATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]\nLOGIN_URL = 'login'\nLOGOUT_REDIRECT_URL = 'login'\n# Default primary key field type\n# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field",
+        "peekOfCode": "USE_I18N = True\nUSE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/5.1/howto/static-files/\n# STATIC_URL = 'static/'\n# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]\nLOGIN_URL = 'login'\nLOGOUT_REDIRECT_URL = 'login'\n# Default primary key field type\n# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field",
         "detail": "todo_project.settings",
         "documentation": {}
     },
@@ -746,25 +697,7 @@
         "kind": 5,
         "importPath": "todo_project.settings",
         "description": "todo_project.settings",
-        "peekOfCode": "USE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/5.1/howto/static-files/\nSTATIC_URL = 'static/'\nSTATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]\nLOGIN_URL = 'login'\nLOGOUT_REDIRECT_URL = 'login'\n# Default primary key field type\n# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'",
-        "detail": "todo_project.settings",
-        "documentation": {}
-    },
-    {
-        "label": "STATIC_URL",
-        "kind": 5,
-        "importPath": "todo_project.settings",
-        "description": "todo_project.settings",
-        "peekOfCode": "STATIC_URL = 'static/'\nSTATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]\nLOGIN_URL = 'login'\nLOGOUT_REDIRECT_URL = 'login'\n# Default primary key field type\n# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'",
-        "detail": "todo_project.settings",
-        "documentation": {}
-    },
-    {
-        "label": "STATICFILES_DIRS",
-        "kind": 5,
-        "importPath": "todo_project.settings",
-        "description": "todo_project.settings",
-        "peekOfCode": "STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]\nLOGIN_URL = 'login'\nLOGOUT_REDIRECT_URL = 'login'\n# Default primary key field type\n# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'",
+        "peekOfCode": "USE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/5.1/howto/static-files/\n# STATIC_URL = 'static/'\n# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]\nLOGIN_URL = 'login'\nLOGOUT_REDIRECT_URL = 'login'\n# Default primary key field type\n# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'",
         "detail": "todo_project.settings",
         "documentation": {}
     },

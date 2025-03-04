@@ -5,9 +5,11 @@ from .models import Task
 from .form import New_Task
 
 
+@login_required
 def home(request):
-    tasks = Task.objects.all()
+    tasks = Task.objects.filter(user=request.user)
     return render(request, 'home.html', {'tasks': tasks})
+
 
 @login_required
 def add_todo(request):
@@ -23,8 +25,14 @@ def add_todo(request):
     return render(request, 'add_todo.html', {'form': form})
 
 
+@login_required
 def edit_todo(request, id):
     task = get_object_or_404(Task, id=id)
+    
+    if task.user != request.user:
+        messages.error(request, 'You do not have permission to access this task.')
+        return redirect('home')
+    
     form = New_Task(instance=task)
     if request.method == 'POST':
         form = New_Task(request.POST, instance=task)
@@ -39,8 +47,12 @@ def edit_todo(request, id):
     return render(request, 'edit_todo.html', {'form': form, 'task': task})
 
 
+@login_required
 def delete_todo(request, id):
     task = get_object_or_404(Task, id=id)
+    if task.user != request.user:
+        return redirect('home')
+    
     if request.method == 'POST':
         task.delete()
         return redirect('home')
